@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="tr">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PNG / WebP kalite karşılaştırması — geliştirme</title>
+<style>
+  *{box-sizing:border-box}body{margin:0;background:#11151c;color:#eee;font:14px system-ui,sans-serif}header{padding:20px}h1{font-size:20px;margin:0 0 12px}p{color:#bfc6d2;line-height:1.5}label{display:inline-flex;gap:8px;align-items:center;margin:5px 16px 5px 0}select,button{font:inherit;color:inherit;background:#242d3a;border:1px solid #63728a;border-radius:4px;padding:9px}button{cursor:pointer}button[aria-pressed=true]{border-color:#8bc8ff;background:#234467}:focus-visible{outline:2px solid #8bc8ff;outline-offset:3px}.versions{display:inline-flex;gap:8px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:0 20px 20px}.grid.single{grid-template-columns:1fr}.panel{min-width:0}.panel[hidden]{display:none}.caption{padding:12px 0;font-variant-numeric:tabular-nums}.viewport{height:65vh;overflow:auto;background:#07090c;border:1px solid #3d4758}.viewport img{display:block;max-width:none}.fit img{width:100%;height:auto}.single .fit img{width:auto;max-width:100%;max-height:65vh;margin:auto}.note{padding:0 20px 20px;color:#bfc6d2}@media(max-width:700px){.grid{padding:0 8px;gap:5px}.caption{font-size:11px}.viewport{height:55vh}}
+</style>
+<header>
+  <h1>Orijinal PNG / WebP Q95 / WebP Q90</h1>
+  <p>Bu araç yalnızca Vite geliştirme sunucusunda bulunur. Portfolio Q95 WebP kullanır; orijinaller korunmuştur. %100, bir görsel pikselini bir CSS pikselinde gösterir; hassas inceleme için tarayıcı yakınlaştırmasını da %100 yapın.</p>
+  <label>Görsel <select id="image"><option>music-desktop</option><option>software-desktop</option><option>music-mobile</option><option>software-mobile</option></select></label>
+  <label>Görünüm <select id="layout"><option value="triple">Yan yana (eşzamanlı kaydırma)</option><option value="single">Aynı konumda sürüm değiştir</option></select></label>
+  <label>Ölçek <select id="zoom"><option value="100">%100 — gerçek boyut</option><option value="fit">Ekrana sığdır</option></select></label>
+  <div class="versions" role="group" aria-label="Görüntülenen sürüm"><button data-version="0" aria-pressed="true">PNG</button><button data-version="1" aria-pressed="false">Q95</button><button data-version="2" aria-pressed="false">Q90</button></div>
+  <p id="details" role="status"></p>
+</header>
+<main class="grid" id="grid">
+  <section class="panel"><div class="caption">PNG</div><div class="viewport"><img alt="Orijinal PNG"></div></section>
+  <section class="panel"><div class="caption">Q95</div><div class="viewport"><img alt="WebP kalite 95"></div></section>
+  <section class="panel"><div class="caption">Q90</div><div class="viewport"><img alt="WebP kalite 90"></div></section>
+</main>
+<p class="note">Özellikle kırmızı/mavi ışık kenarlarını, gitar tellerini, araba detaylarını, gökyüzü geçişlerini ve koyu alanlardaki dokuyu inceleyin. Tekli görünümde sürüm düğmeleri aynı kaydırma konumunu korur. Dosya boyutunun küçük olması kalite onayı anlamına gelmez.</p>
+<script type="module">
+  const $ = id => document.getElementById(id);
+  const panels = [...document.querySelectorAll('.panel')];
+  const viewports = panels.map(p => p.querySelector('.viewport'));
+  const buttons = [...document.querySelectorAll('[data-version]')];
+  const report = await fetch('/tools/image-report.json').then(r => { if (!r.ok) throw Error('Rapor okunamadı'); return r.json(); });
+  let selected = 0;
+  let position = { left: 0, top: 0 };
+  function layout() {
+    $('grid').classList.toggle('single', $('layout').value === 'single');
+    panels.forEach((panel, i) => {
+      panel.hidden = $('layout').value === 'single' && i !== selected;
+      panel.querySelector('.viewport').classList.toggle('fit', $('zoom').value === 'fit');
+    });
+    viewports.forEach(v => { v.scrollLeft = position.left; v.scrollTop = position.top; });
+    buttons.forEach((b, i) => b.setAttribute('aria-pressed', String(i === selected)));
+  }
+  function image() {
+    const row = report.find(r => r.name === $('image').value);
+    position = { left: 0, top: 0 };
+    const files = [`assets/images/${row.name}.png`, ...row.variants.map(v => v.file)];
+    const sizes = [row.originalBytes, ...row.variants.map(v => v.bytes)];
+    panels.forEach((panel, i) => {
+      panel.querySelector('img').src = '/' + files[i];
+      panel.querySelector('.caption').textContent = `${['PNG', 'Q95', 'Q90'][i]} · ${(sizes[i] / 1024).toFixed(1)} KiB${i ? ` · %${row.variants[i - 1].savedPercent} kazanç` : ''}`;
+    });
+    $('details').textContent = `${row.width} × ${row.height} · sRGB · Orijinaller korunmuştur.`;
+    layout();
+  }
+  viewports.forEach(viewport => viewport.addEventListener('scroll', () => {
+    if (viewport.closest('.panel').hidden) return;
+    position = { left: viewport.scrollLeft, top: viewport.scrollTop };
+    viewports.filter(v => v !== viewport && !v.closest('.panel').hidden).forEach(v => {
+      if (v.scrollLeft !== position.left) v.scrollLeft = position.left;
+      if (v.scrollTop !== position.top) v.scrollTop = position.top;
+    });
+  }));
+  buttons.forEach((button, i) => button.addEventListener('click', () => { selected = i; layout(); }));
+  $('image').addEventListener('change', image);
+  $('layout').addEventListener('change', layout);
+  $('zoom').addEventListener('change', () => { position = { left: 0, top: 0 }; layout(); });
+  image();
+</script>
+</html>

@@ -1,0 +1,94 @@
+[
+  {
+    "name": "music-desktop",
+    "width": 1672,
+    "height": 941,
+    "colorSpace": "srgb",
+    "hasICC": false,
+    "originalBytes": 2497086,
+    "originalSHA256": "cf1cf66741dd035d132c7c685f0ec9a810432dfe9e92bc59f4f8dda0dc02e369",
+    "variants": [
+      {
+        "quality": 95,
+        "file": "assets/images/music-desktop-q95.webp",
+        "bytes": 578640,
+        "savedPercent": 76.83
+      },
+      {
+        "quality": 90,
+        "file": "assets/images/music-desktop-q90.webp",
+        "bytes": 441086,
+        "savedPercent": 82.34
+      }
+    ]
+  },
+  {
+    "name": "software-desktop",
+    "width": 1672,
+    "height": 941,
+    "colorSpace": "srgb",
+    "hasICC": false,
+    "originalBytes": 2557767,
+    "originalSHA256": "75be2cfdeb9cfe4303607e9d77c0ddd096b144a9c75f65712b9764b403749fbc",
+    "variants": [
+      {
+        "quality": 95,
+        "file": "assets/images/software-desktop-q95.webp",
+        "bytes": 563782,
+        "savedPercent": 77.96
+      },
+      {
+        "quality": 90,
+        "file": "assets/images/software-desktop-q90.webp",
+        "bytes": 414814,
+        "savedPercent": 83.78
+      }
+    ]
+  },
+  {
+    "name": "music-mobile",
+    "width": 941,
+    "height": 1672,
+    "colorSpace": "srgb",
+    "hasICC": false,
+    "originalBytes": 2307878,
+    "originalSHA256": "5e76d87073431011b8f2d453a6e59f5ffb1d07cd7302ec077960c7eb646574e7",
+    "variants": [
+      {
+        "quality": 95,
+        "file": "assets/images/music-mobile-q95.webp",
+        "bytes": 502928,
+        "savedPercent": 78.21
+      },
+      {
+        "quality": 90,
+        "file": "assets/images/music-mobile-q90.webp",
+        "bytes": 387804,
+        "savedPercent": 83.2
+      }
+    ]
+  },
+  {
+    "name": "software-mobile",
+    "width": 941,
+    "height": 1672,
+    "colorSpace": "srgb",
+    "hasICC": false,
+    "originalBytes": 2518471,
+    "originalSHA256": "9e89adc9473ad5c7281c17d84f3ab5647cab10664721d173a90195081d14557a",
+    "variants": [
+      {
+        "quality": 95,
+        "file": "assets/images/software-mobile-q95.webp",
+        "bytes": 535450,
+        "savedPercent": 78.74
+      },
+      {
+        "quality": 90,
+        "file": "assets/images/software-mobile-q90.webp",
+        "bytes": 397486,
+        "savedPercent": 84.22
+      }
+    ]
+  }
+]
